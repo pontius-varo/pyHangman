@@ -49,28 +49,31 @@ class Hangman:
     ##Game state in which the player will provide inputs that will match the strings or not
     def Gamestate(self):
 
-       #Figure out how to display the used letters array!
         while True:
 
-            userletter = input('Enter a letter: ')
+            userletter= input('Enter a letter: ')
 
-            if (userletter not in self.wrong_letters):
+            if len(userletter) != 1:
+                print('Invalid Character!')
 
-                if userletter in self.secretword:
-                    print("That is correct.")
-                    self.correct_letters.append(userletter)
-                    print (self.correct_letters)
-                else:
-                    print("That is incorrect")
-                    self.wrong_letters.append(userletter)
+            if (userletter in self.wrong_letters) or (userletter in self.correct_letters):
+                print('You already guessed that dofus!')
+
+            if userletter in self.secretword:
+                print("That is correct")
+                cnt = self.secretword.count(userletter)
+                self.correct_letters.extend(repeat(userletter, cnt))
+
+            else:
+                print("That is incorrect")
+                self.wrong_letters.append(userletter)
+
 
             if len(self.correct_letters) == len(self.secretword):
-                self.Game_over(0)
-                return
+                self.game_over(0)
 
             if len(self.wrong_letters) == 6:
-                self.Game_over(1)
-                return
+                self.game_over(1)
 
     def Game_over(self, x):
 
