@@ -1,10 +1,9 @@
 #Hangman Python
-import math
-import sys
-import time
-import random
 import functools
-##Establish the hangman class
+import random
+from itertools import repeat
+from lib import graphics
+
 class Hangman:
 
     ##Add a score
@@ -13,7 +12,7 @@ class Hangman:
     words = [ "hat", "constantinople", "hispana", "rome", "arch", "athens",
             "paris", "lima", "guayaquil", "portoviejo", "vienna", "seville",
             "valladolid", "oveido", "porto", "lisbon", "pavia", "aquileia"]
-    ##Wrong letters go below
+    ##Wrong letters go belo
     wrong_letters = []
     ##Correct letters go below
     correct_letters = []
@@ -23,15 +22,12 @@ class Hangman:
         self.name = nm
         ##Fetches a random word from the static array 'words'
         word = random.choice(self.words)
-        ##Split said word into seperate strings
-        self.secretword = self.split(word)
-        print(self.secretword)
+        self.secretword = str(word)
         ##Start the pregame
         self.Pregame()
 
     ##Pre-game state in which the user is given the option to begin or exit.
     def Pregame(self):
-
         print ("Hello, " + self.name + "!", "Time to play hangman!")
         print ("Enter 'start' to begin. Otherwise, enter 'exit'")
 
@@ -46,12 +42,25 @@ class Hangman:
             else:
                 print('I don\'t understand what that means')
 
-    ##Game state in which the player will provide inputs that will match the strings or not
+    # The following was borrowed mostly from https://github.com/aglla/pyprojects/blob/master/hangman.py
+    def display(self, HANGMANPICS):
+        print(self.name)
+        print(self.score)
+        print(HANGMANPICS[len(self.wrong_letters)])
+        hidden = "_" * len(self.secretword)
+        currentword = self.secretword
+
+        for x in range(0, len(self.secretword)):
+            if self.secretword[x] not in self.correct_letters:
+                currentword = currentword.replace(self.secretword[x], '_')
+        print(currentword)
+
     def Gamestate(self):
 
         while True:
 
-            userletter= input('Enter a letter: ')
+            self.display(graphics.HANGMANPICS)
+            userletter= str(input('Enter a letter: '))
 
             if len(userletter) != 1:
                 print('Invalid Character!')
@@ -59,56 +68,38 @@ class Hangman:
             if (userletter in self.wrong_letters) or (userletter in self.correct_letters):
                 print('You already guessed that dofus!')
 
-            if userletter in self.secretword:
+            elif userletter in self.secretword:
                 print("That is correct")
                 cnt = self.secretword.count(userletter)
                 self.correct_letters.extend(repeat(userletter, cnt))
-
+                self.score += 1
             else:
                 print("That is incorrect")
                 self.wrong_letters.append(userletter)
-
-
+                self.score -= 1
             if len(self.correct_letters) == len(self.secretword):
-                self.game_over(0)
+                self.Game_over(0)
 
             if len(self.wrong_letters) == 6:
-                self.game_over(1)
+                self.Game_over(1)
 
     def Game_over(self, x):
 
         while True:
 
-            if x ==  1:
-                print('You lose!')
+            if x == 1:
+                print('You lose! The correct word was', self.secretword)
             else:
                 print('You win!')
-
-            option = input('Play again? >>> ')
-
-            if option == 'yes':
-                self.Pregame()
-            elif option == 'no':
                 quit()
-            else:
-                print('I don\'t know what that means!')
+            #option = input('Play again?(y/n) >>> ')
 
+            #if option == 'y':
+                #reset()
+            #elif option == 'n':
+                #quit()
+            #else:
+                #print('I don\'t know what that means!')
 
-    def split(self, word):
-        return [char for char in word]
-
-    def sub(x, y):
-        x = x - y
-        return x
-
-
-
-## Initialize pygame
-#pygame.init()
-
-
-##Initialize Game itself
-#Figure out how to prompt the user inside the pygame window!
 name = input("Please enter your name >>> ")
-
 start = Hangman(name)
