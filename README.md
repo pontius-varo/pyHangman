@@ -2,6 +2,6 @@
 
 #==============================#
 
-A hangman game written in Python 3.8, along with Pygame.
+A terminal hangman game written in Python 3.8.
 
 #==============================#

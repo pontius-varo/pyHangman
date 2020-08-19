@@ -89,8 +89,9 @@ class Hangman:
 
             if x == 1:
                 print('You lose! The correct word was', self.secretword)
+                quit()
             else:
-                print('You win!')
+                print('You win! The word was', self.secretword)
                 quit()
             #option = input('Play again?(y/n) >>> ')
 
